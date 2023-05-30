@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+
+from PIL import Image
+import argparse
+from os import path
+
+
+parser = argparse.ArgumentParser(
+        description='Convert the image to match your setup!')
+parser.add_argument(
+        'file', nargs=1,
+        help='File to convert')
+parser.add_argument('-p', '--palette',
+                    nargs='?', help="Choose different palette (defaults to 'mocha')", const=1,
+                    default="mocha")
+parser.add_argument('-n', '--noise',
+                    nargs='?', help="Choose different noises (0 - lowest, 4 - highest, defaults to 4)",
+                    const=1,
+                    default="4")
+parser.add_argument('-o', '--output', nargs='?', const=1, help="Write to output png file", default="generated.png")
+
+args = parser.parse_args()
+
+IMAGE_PATH = path.realpath(args.file[0])
+
+CLUT_PATH = path.realpath(f"palette/{args.palette}/noise_{args.noise}.png")
+
+if not path.exists(IMAGE_PATH):
+    raise TypeError(f"That image path doesn't seem to be exist ({IMAGE_PATH})")
+if not path.exists(CLUT_PATH):
+    raise ImportError(f"Cannot generate the image: Missing clut image ({CLUT_PATH})")
+
+with Image.open(IMAGE_PATH) as img:
+
+    out_img = Image.new("RGBA", (img.width, img.height))
+
+    img = img.convert(mode="RGBA")
+
+    clut = Image.open(CLUT_PATH)
+    # to match with image.
+    clut = clut.convert(mode="RGB")
+
+    for y in range(img.height):
+        for x in range(img.width):
+            r = 0
+            g = 0
+            b = 0
+            a = 255
+
+            if img.mode == "RGBA":
+                r, g, b, a = img.getpixel((x, y))
+            else:
+                r, g, b = img.getpixel((x, y))
+            if a == 0:
+                continue
+            else:
+                r = int(r / 4)
+                g = int(g / 4)
+                b = int(b / 4)
+
+                c_x = int(r % 64 + (g % 8) * 64)
+                c_y = int(b * 8 + g / 8)
+                c_pixel = clut.getpixel((c_x, c_y))
+
+                out_pixel = (c_pixel[0], c_pixel[1], c_pixel[2], a)
+                out_img.putpixel((x, y), out_pixel)
+                
+    out_img.save(args.output)
