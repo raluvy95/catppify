@@ -23,7 +23,7 @@ args = parser.parse_args()
 
 IMAGE_PATH = path.realpath(args.file[0])
 
-CLUT_PATH = path.realpath(f"palette/{args.palette}/noise_{args.noise}.png")
+CLUT_PATH = path.realpath(f"./palette/{args.palette}/noise_{args.noise}.png")
 
 if not path.exists(IMAGE_PATH):
     raise TypeError(f"That image path doesn't seem to be exist ({IMAGE_PATH})")
