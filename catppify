@@ -11,19 +11,28 @@ parser.add_argument(
         'file', nargs=1,
         help='File to convert')
 parser.add_argument('-p', '--palette',
-                    nargs='?', help="Choose different palette (defaults to 'mocha')", const=1,
+                    nargs='?',
+                    help="Choose different palette (defaults to 'mocha')",
+                    const=1,
                     default="mocha")
 parser.add_argument('-n', '--noise',
-                    nargs='?', help="Choose different noises (0 - lowest, 4 - highest, defaults to 4)",
+                    nargs='?',
+                    help="Choose different noises (0 - lowest, 4 - highest, defaults to 4)",
                     const=1,
                     default="4")
-parser.add_argument('-o', '--output', nargs='?', const=1, help="Write to output png file", default="generated.png")
+parser.add_argument('-o',
+                    '--output',
+                    nargs='?',
+                    const=1,
+                    help="Write to output png file",
+                    default="generated.png")
 
 args = parser.parse_args()
 
 IMAGE_PATH = path.realpath(args.file[0])
 
-CLUT_PATH = path.realpath(f"./palette/{args.palette}/noise_{args.noise}.png")
+SRC_DIR = path.realpath(__file__).strip("catppify")
+CLUT_PATH = path.realpath(f"{SRC_DIR}/palette/{args.palette}/noise_{args.noise}.png")
 
 if not path.exists(IMAGE_PATH):
     raise TypeError(f"That image path doesn't seem to be exist ({IMAGE_PATH})")
@@ -64,5 +73,9 @@ with Image.open(IMAGE_PATH) as img:
 
                 out_pixel = (c_pixel[0], c_pixel[1], c_pixel[2], a)
                 out_img.putpixel((x, y), out_pixel)
+
+        print((y)/(img.height))
                 
     out_img.save(args.output)
+
+    # = 14 17 42
