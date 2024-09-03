@@ -74,8 +74,5 @@ with Image.open(IMAGE_PATH) as img:
                 out_pixel = (c_pixel[0], c_pixel[1], c_pixel[2], a)
                 out_img.putpixel((x, y), out_pixel)
 
-        print((y)/(img.height))
                 
     out_img.save(args.output)
-
-    # = 14 17 42
