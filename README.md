@@ -11,7 +11,7 @@ Generate image with default values (mocha and 4-level noise)
 ./catppify background.png
 ```
 
-Generate image with latte as prefered palette and 2-level noise
+Generate image with latte as preferred palette and 2-level noise
 ```sh
 ./catppify background -p latte -n 2
 ```
